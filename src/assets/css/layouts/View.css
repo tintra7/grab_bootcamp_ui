@@ -1,0 +1,5 @@
+.view {
+  background-color: var(--cream);
+  grid-area: view;
+  box-sizing: border-box;
+}

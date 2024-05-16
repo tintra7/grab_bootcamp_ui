@@ -1,0 +1,34 @@
+.power-button-group{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.power-button { 
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  
+  color: white;
+  border-radius: 1rem;
+  padding: 1rem;
+  gap: 0.5rem;  
+}
+
+.power-button.off {
+  background-color: var(--dark-green);
+}
+
+.power-button.on {
+  background-color: var(--orange);
+}
+
+.power-icon { 
+  font-size: 1.8rem;
+}

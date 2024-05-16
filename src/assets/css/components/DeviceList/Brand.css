@@ -1,0 +1,11 @@
+.brand-image { 
+  width: 10rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  object-fit: cover;
+}
+.brand-image > img { 
+  max-width:100%;
+  max-height:100%;
+}

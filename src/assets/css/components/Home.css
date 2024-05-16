@@ -1,0 +1,20 @@
+.default-view {
+  height: 95%;
+  width: 98%;
+  font-size: 2.1rem;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 5% 0;
+  color: var(--dark-green);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  border-radius: 15px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.default-view > img {
+  margin-top: 5%;
+  width: 30%;
+}
