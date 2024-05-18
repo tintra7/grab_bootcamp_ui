@@ -14,7 +14,7 @@ import { STATUS, FANSPEEDFORFAN, FANLIGHT, FANSWING } from '@/constants/enum'
 
 import Swal from 'sweetalert2'
 import { loading } from '@/utils/sweetAlert'
-import DeviceCardOff from '../DeviceList/DeviceCardOff'
+
 
 interface FanCardProp {
   fan: IFan
@@ -75,6 +75,7 @@ const FanCardOff = ({ fan, updateFanList }: FanCardProp): JSX.Element => {
         </div>
       </div>
       <div className='card-footer'>
+          
           <FanPowerButtonGroup status={fan.status} onClick={onClickOn}/>
       </div>
     </div>

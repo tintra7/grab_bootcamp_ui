@@ -6,7 +6,7 @@ import SendFanSignalRequest from '@/models/requests/FanRequest/sendFanSignalRequ
 const sendFanSignal = async (requestBody: SendFanSignalRequest) => {
   try {
     await axios.post(
-      `${apiFanUrl}/${requestBody.fanId}/sendSignal`,
+      `${apiFanUrl}/${requestBody.fanId}/sendsignal`,
       requestBody
     )
   } catch (error) {

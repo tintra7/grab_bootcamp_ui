@@ -11,6 +11,7 @@ import '@/assets/css/components/FanList/FanCard.css'
 
 import getFanStats from '@/services/servicesFan/getFanStats'
 import sendFanSignal from '@/services/servicesFan/sendFanSignal'
+import sendFanSpeedSignal from '@/services/servicesFan/sendFanSpeedSignal'
 
 import { FANLIGHT, FANSPEEDFORFAN, FANSWING, STATUS } from '@/constants/enum'
 import { IFan } from '@/models/entities/fanModel'
@@ -19,6 +20,8 @@ import Swal, { SweetAlertOptions } from 'sweetalert2'
 import { warningAlert } from '@/utils/sweetAlert'
 
 import SendFanSignalRequest from '@/models/requests/FanRequest/sendFanSignalRequest'
+import FanIncreaseButtonGroup from './FanIncreaseButtonGroup'
+import SendFanSpeedSignalRequest from '@/models/requests/FanRequest/sendFanSpeedSignalRequest'
 
 
 interface FanCardProp {
@@ -76,6 +79,22 @@ const FanCardOn = ({
     }
   }
 
+  const craftSendFanSpeedSignalRequest = (optionalPara: {
+    status?: STATUS
+    fanspeed?: FANSPEEDFORFAN
+    // light?: FANLIGHT
+    // swing?: FANSWING
+  }): SendFanSpeedSignalRequest => {
+    return {
+      fanId: fan._id,
+      userId: 'test',
+      // status: optionalPara.status || STATUS.ON,
+      fanSpeed: optionalPara.fanspeed || fan.fanSpeed
+      // light: optionalPara.light || fan.light,
+      // swing: optionalPara.swing || fan.swing
+    }
+  }
+
   const onClickOff = async () => {
     try {
       setIsLoading(true)
@@ -89,17 +108,30 @@ const FanCardOn = ({
     }
   }
 
-  const onFanSpeedControlChange = async (fanSpeed: FANSPEEDFORFAN) => {
-    setIsLoading(true)
-    setFanSpeed(fanSpeed)
+  const onClickFanSpeedIncreaseControlChange = async () => {
     try {
-      await sendFanSignal(craftSendFanSignalRequest({ fanspeed: fanSpeed }))
+      setIsLoading(true)
+      updateFanList({ ...fan, fanSpeed: FANSPEEDFORFAN.INCREASE })
+
+      await sendFanSpeedSignal(craftSendFanSpeedSignalRequest({ fanspeed: FANSPEEDFORFAN.INCREASE }))
     } catch (e) {
       console.log(e)
     } finally {
       setIsLoading(false)
     }
   }
+
+  // const onFanSpeedControlChange = async (fanSpeed: FANSPEEDFORFAN) => {
+  //   setIsLoading(true)
+  //   setFanSpeed(fanSpeed)
+  //   try {
+  //     await sendFanSignal(craftSendFanSignalRequest({ fanspeed: fanSpeed }))
+  //   } catch (e) {
+  //     console.log(e)
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
   const onFanLightControlChange = async (light: FANLIGHT) => {
     setIsLoading(true)
@@ -158,6 +190,7 @@ const FanCardOn = ({
         </div>
       </div>
       <div className='card-footer'>
+          <FanIncreaseButtonGroup fanSpeed={fan.fanSpeed} onClick={onClickFanSpeedIncreaseControlChange}/>
           <FanPowerButtonGroup status={fan.status} onClick={onClickOff}/>
       </div>
     </div>
