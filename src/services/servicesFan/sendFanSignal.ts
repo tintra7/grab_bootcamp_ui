@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { apiFanUrl, apiUrl } from '@/constants/serverConfig'
+import { apiFanUrl } from '@/constants/serverConfig'
 import SendFanSignalRequest from '@/models/requests/FanRequest/sendFanSignalRequest'
 
 const sendFanSignal = async (requestBody: SendFanSignalRequest) => {

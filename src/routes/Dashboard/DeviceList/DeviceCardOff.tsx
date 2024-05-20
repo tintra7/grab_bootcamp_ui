@@ -77,7 +77,7 @@ const DeviceCardOff = ({
           <div className='fan-speed'>MED</div>
           <div className='fan-speed'>LOW</div>
         </div>
-        <div className='stats-container disable'>
+        <div  className='stats-container disable'>
           <div className='stat'>
             <WaterDropIcon className='stat-icon humidity' />
             <span>--</span>

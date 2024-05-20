@@ -7,7 +7,7 @@ import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
 import FanPowerButtonGroup from '../FanList/FanPowerButtonGroup'
 
 import FanON from '@/assets/images/fan-on.png'
-import '@/assets/css/components/FanList/FanCard.css'
+import '@/assets/css/components/DeviceList/DeviceCard.css'
 
 import getFanStats from '@/services/servicesFan/getFanStats'
 import sendFanSignal from '@/services/servicesFan/sendFanSignal'
@@ -172,7 +172,7 @@ const FanCardOn = ({
   }
 
   return (
-    <div className='fan-card on'>
+    <div className='device-card on'>
       <div className='card-header'>
         <div className='status-card'>
           {isLoading == true ? (
@@ -183,8 +183,8 @@ const FanCardOn = ({
             fan.status
           )}
         </div>
-        <div className='fan-name-container'>
-          <div className='fan-name'>{fan.name}</div>
+        <div className='device-name-container'>
+          <div className='device-name'>{fan.name}</div>
           <EditIcon className='edit-icon' />
         </div>
       </div>

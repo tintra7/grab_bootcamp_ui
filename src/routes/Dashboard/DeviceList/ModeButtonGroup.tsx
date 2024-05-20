@@ -26,6 +26,8 @@ const ModeButtonGroup = ({
     onModeChange(mode)
   }
 
+  const activeButton = currentMode == MODE.MOISTURING ? 'active' : 'inactive';
+
   return (
     <div
       className={`mode-button-group ${status != STATUS.ON ? 'disable' : ''}`}
@@ -49,12 +51,10 @@ const ModeButtonGroup = ({
         <span>Default</span>
       </div>
       <div
-        className={`mode-button button ${
-          currentMode == MODE.MOISTURING ? 'active' : 'inactive'
-        }`}
+        className={`mode-button button ${activeButton}`}
         onClick={() => onModeClick(MODE.MOISTURING)}
       >
-        <OpacityIcon className='mode-icon' />
+        <OpacityIcon className={`mode-icon ${activeButton}`} />
         <span>Moisturing</span>
       </div>
     </div>

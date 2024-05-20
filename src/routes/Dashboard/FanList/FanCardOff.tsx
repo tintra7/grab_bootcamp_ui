@@ -51,10 +51,10 @@ const FanCardOff = ({ fan, updateFanList }: FanCardProp): JSX.Element => {
     }
   }
   return (
-    <div className='fan-card off'>
+    <div className='device-card off'>
       <div className='card-header'>
         <div className='status-card'>{fan.status}</div>
-        <div className='fan-name-container'>
+        <div className='device-name-container'>
           <div className='device-name'>{fan.name}</div>
           <EditIcon className='edit-icon' />
         </div>
