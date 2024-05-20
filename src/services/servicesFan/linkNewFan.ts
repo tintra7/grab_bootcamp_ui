@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { apiFanUrl, apiUrl } from '@/constants/serverConfig'
+import { apiFanUrl } from '@/constants/serverConfig'
 import { LinkFanRequest } from '@/models/requests/FanRequest/linkFanRequest'
 
 const linkNewFan = async (requestBody: LinkFanRequest) => {

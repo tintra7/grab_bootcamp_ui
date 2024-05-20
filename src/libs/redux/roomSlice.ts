@@ -3,10 +3,12 @@ import { createSlice } from '@reduxjs/toolkit'
 
 export interface RoomState {
   _id: string
+  sensorId: string
 }
 
 const initialState: RoomState = {
-  _id: ''
+  _id: '',
+  sensorId: ''
 }
 
 export const roomSlice = createSlice({
@@ -15,9 +17,11 @@ export const roomSlice = createSlice({
   reducers: {
     updateRoom: (state, action: PayloadAction<RoomState>) => {
       state._id = action.payload._id
+      state.sensorId = action.payload.sensorId
     },
     clearRoom: (state) => {
       state._id = ''
+      state.sensorId = ''
     }
   }
 })

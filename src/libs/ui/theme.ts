@@ -74,14 +74,13 @@ const theme = createTheme({
           style: {
             color: colors.green900,
             background: colors.black50,
-            minWidth: 0,
-            padding: '0.5rem'
+            minWidth: 0
           }
         }
       ],
       styleOverrides: {
         root: {
-          padding: '12px',
+          padding: '0.5rem',
           textTransform: 'inherit',
           '&:focus': {
             outline: 'none'

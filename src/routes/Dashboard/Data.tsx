@@ -1,34 +1,58 @@
-import { BarChart } from '@mui/x-charts'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { LineChart } from '@mui/x-charts'
+import axios from 'axios'
+import Swal, { SweetAlertOptions } from 'sweetalert2'
+
+import { apiSensorUrl } from '@/constants/serverConfig'
+import { colors } from '@/libs/ui'
+import { errorAlert, loading } from '@/utils/sweetAlert'
 
 export default function Data() {
-  const h1 = [60, 41, 37, 31, 60, 36, 39, 32, 33, 59]
-  const t1 = [31, 30, 37, 33, 33, 34, 37, 30, 31, 33]
+  const sensorId = useSelector((state: any) => state.room.sensorId)
+
+  const [data, setData] = useState<any>({})
+
+  async function fetchData() {
+    try {
+      const response = await axios.get(
+        `${apiSensorUrl}/last?sensorId=${sensorId}&record=10`
+      )
+      const data = await response.data
+      return data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    Swal.fire(loading)
+    sensorId &&
+      fetchData()
+        .then((data) => {
+          setData(data)
+          Swal.close()
+        })
+        .catch(() => {
+          Swal.fire(errorAlert('Failed to get data!') as SweetAlertOptions)
+        })
+  }, [sensorId])
 
   return (
-    <BarChart
+    <LineChart
       xAxis={[
         {
           scaleType: 'band',
-          data: [
-            '2024-05-19 08:11:05',
-            '2024-05-19 08:11:06',
-            '2024-05-19 08:11:07',
-            '2024-05-19 08:11:08',
-            '2024-05-19 08:11:09',
-            '2024-05-19 08:11:10',
-            '2024-05-19 08:11:11',
-            '2024-05-19 08:11:12',
-            '2024-05-19 08:11:13',
-            '2024-05-19 08:11:14'
-          ]
+          data: data.timestamp || []
         }
       ]}
       series={[
-        { data: h1, label: 'Humidity' },
-        { data: t1, label: 'Temperature' }
+        { data: data.humidity || [], label: 'Humidity' },
+        { data: data.temp || [], label: 'Temperature' }
       ]}
-      width={800}
+      width={1200}
       height={400}
+      colors={[colors.green500, colors.blue500]}
     />
   )
 }

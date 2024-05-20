@@ -28,7 +28,7 @@ const Header: React.FC = () => {
   const roomRedux = useSelector((state: any) => state.room._id)
   const dispatch = useDispatch()
 
-  const [rooms, setRooms] = useState<[]>([])
+  const [rooms, setRooms] = useState<any[]>([])
   const [room, setRoom] = useState<string>(roomRedux)
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const Header: React.FC = () => {
         Swal.close()
         setRooms(rooms)
         setRoom(rooms[0]._id)
-        dispatch(updateRoom({ _id: rooms[0]._id }))
+        dispatch(updateRoom({ _id: rooms[0]._id, sensorId: rooms[0].sensorId }))
       })
       .catch(() => Swal.fire('Failed to get rooms'))
   }, [])
@@ -59,7 +59,13 @@ const Header: React.FC = () => {
           value={room}
           onChange={(e) => {
             setRoom(e.target.value as string)
-            dispatch(updateRoom({ _id: e.target.value as string }))
+            dispatch(
+              updateRoom({
+                _id: e.target.value as string,
+                sensorId: rooms.find((room: any) => room._id === e.target.value)
+                  ?.sensorId
+              })
+            )
           }}
         >
           {rooms.map((room: any) => (
