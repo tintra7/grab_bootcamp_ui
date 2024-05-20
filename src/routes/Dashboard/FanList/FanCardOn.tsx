@@ -22,6 +22,7 @@ import { warningAlert } from '@/utils/sweetAlert'
 import SendFanSignalRequest from '@/models/requests/FanRequest/sendFanSignalRequest'
 import FanIncreaseButtonGroup from './FanIncreaseButtonGroup'
 import SendFanSpeedSignalRequest from '@/models/requests/FanRequest/sendFanSpeedSignalRequest'
+import FanDecreaseButtonGroup from './FanDecreaseButtonGroup'
 
 
 interface FanCardProp {
@@ -121,6 +122,19 @@ const FanCardOn = ({
     }
   }
 
+  const onClickFanSpeedDecreaseControlChange = async () => {
+    try {
+      setIsLoading(true)
+      updateFanList({ ...fan, fanSpeed: FANSPEEDFORFAN.DECREASE })
+
+      await sendFanSpeedSignal(craftSendFanSpeedSignalRequest({ fanspeed: FANSPEEDFORFAN.DECREASE }))
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   // const onFanSpeedControlChange = async (fanSpeed: FANSPEEDFORFAN) => {
   //   setIsLoading(true)
   //   setFanSpeed(fanSpeed)
@@ -190,6 +204,7 @@ const FanCardOn = ({
         </div>
       </div>
       <div className='card-footer'>
+          <FanDecreaseButtonGroup fanSpeed={fan.fanSpeed} onClick={onClickFanSpeedDecreaseControlChange}/>
           <FanIncreaseButtonGroup fanSpeed={fan.fanSpeed} onClick={onClickFanSpeedIncreaseControlChange}/>
           <FanPowerButtonGroup status={fan.status} onClick={onClickOff}/>
       </div>
