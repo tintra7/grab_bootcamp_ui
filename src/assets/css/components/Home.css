@@ -1,20 +1,139 @@
-.default-view {
-  height: 95%;
-  width: 98%;
-  font-size: 2.1rem;
-  text-align: center;
-  box-sizing: border-box;
-  padding: 5% 0;
-  color: var(--dark-green);
+.home-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin: auto;
-  border-radius: 15px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  gap: 2.5rem;
+  height: calc(100% - 80px);
+  overflow-y: scroll;
+  scrollbar-width: none;
 }
 
-.default-view > img {
-  margin-top: 5%;
-  width: 30%;
+.room {
+  padding: 0.75rem;
+  align-content: end;
+  color: white;
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%),
+    url('../../images/bedroom.svg') lightgray 50% / cover no-repeat;
+  height: calc(100% - 24px);
+}
+
+.home-section {
+  background: white;
+  padding: 1.25rem 1rem;
+  border-radius: 1rem;
+}
+
+.weather {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  height: calc(100% - 40px);
+}
+
+.device {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sensor {
+  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: calc(100% - 40px);
+}
+
+.sensor .temp {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sensor .text {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.device-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.device-controller {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.gauge-container {
+  position: relative;
+  background: var(--light-green);
+  width: 195px;
+  height: 195px;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.gauge {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.75rem;
+}
+
+.button {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.device-list .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.device-list .card {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.device-list .card .info {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.weather-info {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.weather-status {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }

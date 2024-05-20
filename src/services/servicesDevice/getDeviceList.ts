@@ -1,11 +1,13 @@
-import { IDevice } from '@/models/entities/deviceModel'
 import axios, { AxiosResponse } from 'axios'
 
-import { apiUrl } from '@/constants/serverConfig'
+import { apiDeviceUrl } from '@/constants/serverConfig'
+import { IDevice } from '@/models/entities/deviceModel'
 
-const getDeviceList = async (): Promise<IDevice[]> => {
+const getDeviceList = async (room?: string): Promise<IDevice[]> => {
   try {
-    const response: AxiosResponse<IDevice[]> = await axios.get(`${apiUrl}`)
+    const response: AxiosResponse<IDevice[]> = await axios.get(
+      room ? `${apiDeviceUrl}?roomId=${room}` : `${apiDeviceUrl}`
+    )
     return response.data
   } catch (error) {
     console.error(error)

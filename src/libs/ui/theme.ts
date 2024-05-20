@@ -68,6 +68,15 @@ const theme = createTheme({
               background: colors.green400
             }
           }
+        },
+        {
+          props: { color: 'info' },
+          style: {
+            color: colors.green900,
+            background: colors.black50,
+            minWidth: 0,
+            padding: '0.5rem'
+          }
         }
       ],
       styleOverrides: {
@@ -139,10 +148,7 @@ const theme = createTheme({
       ],
       styleOverrides: {
         root: {
-          color: colors.white,
-          '&.MuiSelect-icon': {
-            color: colors.white
-          }
+          color: colors.white
         }
       }
     },
@@ -191,9 +197,7 @@ const theme = createTheme({
     },
     MuiSelect: {
       styleOverrides: {
-        icon: {
-          fill: 'white'
-        }
+        root: {}
       }
     },
     MuiMenu: {
@@ -278,37 +282,6 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           padding: 0
-        }
-      }
-    },
-    MuiSwitch: {
-      styleOverrides: {
-        root: {
-          width: 329.5,
-          height: 55,
-          background: colors.green800,
-          borderRadius: 4,
-          '& .MuiSwitch-switchBase': {
-            padding: 0,
-            width: 160.75,
-            height: 47,
-            borderRadius: 4,
-            transform: 'translateX(4px) translateY(4px)',
-            '&.Mui-checked': {
-              transform: 'translateX(164.75px) translateY(4px)',
-              '& + .MuiSwitch-track': {
-                backgroundColor: colors.green800
-              }
-            }
-          },
-          '& .MuiSwitch-thumb': {
-            borderRadius: 4
-          },
-          '& .MuiSwitch-track': {
-            opacity: 1,
-            backgroundColor: colors.green800,
-            borderRadius: 4
-          }
         }
       }
     },

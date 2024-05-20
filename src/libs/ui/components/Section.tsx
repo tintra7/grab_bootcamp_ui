@@ -13,7 +13,7 @@ const MainSection = styled('section')(({ theme }) => ({
 const StyledPaper = styled(Paper)({
   display: 'flex',
   flexDirection: 'column',
-  gap: '1rem',
+  gap: '2rem',
   minHeight: 'inherit',
   height: '100%'
 })

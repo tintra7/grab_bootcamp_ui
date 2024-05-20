@@ -47,7 +47,7 @@ export function SideBar({
   const handleLogOut = () => {
     // eraseCookie('token');
     localStorage.removeItem('hasNavigated')
-    // navigate('/sign-in');
+    navigate('/login')
   }
 
   return (

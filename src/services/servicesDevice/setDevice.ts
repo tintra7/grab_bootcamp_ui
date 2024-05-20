@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-import { apiUrl } from '@/constants/serverConfig'
+import { apiDeviceUrl } from '@/constants/serverConfig'
 import { SetDeviceRequest } from '@/models/requests/DeviceRequest/setDeviceRequest'
 
 const setDevice = async (requestBody: SetDeviceRequest) => {
   try {
-    await axios.post(`${apiUrl}/${requestBody.deviceId}/set`, requestBody)
+    await axios.post(`${apiDeviceUrl}/${requestBody.deviceId}/set`, requestBody)
   } catch (error) {
     console.error(error)
   }

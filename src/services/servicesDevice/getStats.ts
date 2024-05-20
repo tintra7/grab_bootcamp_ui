@@ -1,12 +1,12 @@
 import axios, { AxiosResponse } from 'axios'
 
-import { apiUrl } from '@/constants/serverConfig'
+import { apiDeviceUrl } from '@/constants/serverConfig'
 import StatsResponse from '@/models/responses/getStatsResponse'
 
 const getStats = async (deviceId: string): Promise<StatsResponse> => {
   try {
     const response: AxiosResponse<StatsResponse> = await axios.get(
-      `${apiUrl}/${deviceId}/stats`
+      `${apiDeviceUrl}/${deviceId}/stats`
     )
     return response.data
   } catch (error) {

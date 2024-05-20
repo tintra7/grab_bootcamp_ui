@@ -4,19 +4,22 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
 
 import {
+  BarChartRounded,
   HeatPumpRounded,
   HomeRounded,
-  InsertLinkRounded
+  InsertLinkRounded,
+  WindPower
 } from '@mui/icons-material'
 
 import { colors } from '@/libs/ui'
 import { ISideBarItem, Section, SideBar } from '@/libs/ui/components'
 import Header from '@/libs/ui/components/Header'
 import DeviceList from '@/routes/Dashboard/DeviceList/DeviceList'
-import DefaultView from '@/routes/Dashboard/Home/Home'
+import Home from '@/routes/Dashboard/Home/Home'
 import FanList from './FanList/FanList'
 import LinkWizard from './LinkWizard/LinkDevice/LinkWizard'
 import LinkFanWizard from './LinkWizard/LinkFan/LinkFanWizard'
+import Data from './Data'
 
 import '@/assets/css/layouts/View.css'
 
@@ -39,12 +42,17 @@ const SideBarItems: ISideBarItem[] = [
   {
     key: 'fans',
     label: 'Fans',
-    icon: <HeatPumpRounded />
+    icon: <WindPower />
   },
   {
     key: 'linkfan',
     label: 'Link Fan',
     icon: <InsertLinkRounded />
+  },
+  {
+    key: 'data',
+    label: 'Data',
+    icon: <BarChartRounded />
   }
 ]
 
@@ -81,11 +89,12 @@ const Dashboard: React.FC = () => {
       <Section>
         <Header />
         <Routes>
-          <Route element={<DefaultView />} path='/'></Route>
+          <Route element={<Home />} path='/'></Route>
           <Route element={<DeviceList />} path='/devices'></Route>
           <Route element={<LinkWizard />} path='/link'></Route>
           <Route element={<FanList />} path='/fans'></Route>
           <Route element={<LinkFanWizard />} path='/linkfan'></Route>
+          <Route element={<Data />} path='/data'></Route>
         </Routes>
       </Section>
     </>

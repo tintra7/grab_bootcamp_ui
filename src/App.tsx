@@ -1,7 +1,7 @@
-import { Routes, Route } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
-import Login from '@/routes/Login/Login'
 import Dashboard from '@/routes/Dashboard/Dashboard'
+import Login from '@/routes/Login/Login'
 
 const App: React.FC = () => {
   return (

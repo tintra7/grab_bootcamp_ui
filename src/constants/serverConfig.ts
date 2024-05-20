@@ -1,3 +1,9 @@
-export const apiUrl = 'http://localhost:8000/api/devices'
+const apiUrl = import.meta.env.VITE_API_URL
 
-export const apiFanUrl = 'http://localhost:8000/api/fans'
+export const apiDeviceUrl = `${apiUrl}devices`
+
+export const apiFanUrl = `${apiUrl}fans`
+
+export const apiRoomUrl = `${apiUrl}rooms`
+
+export const apiSensorUrl = `${apiUrl}sensors`
