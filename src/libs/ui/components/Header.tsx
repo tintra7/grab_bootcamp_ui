@@ -3,16 +3,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
 
 import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 import { NotificationsRounded } from '@mui/icons-material'
 
 import { updateRoom } from '@/libs/redux/roomSlice'
 import getRoomList from '@/services/servicesDevice/getRoomList'
 import { loading } from '@/utils/sweetAlert'
+import theme from '../theme'
 import { colors } from '..'
 
 import '@/assets/css/layouts/Header.css'
@@ -27,6 +30,7 @@ function stringAvatar(name: string) {
 const Header: React.FC = () => {
   const roomRedux = useSelector((state: any) => state.room._id)
   const dispatch = useDispatch()
+  const hidden = useMediaQuery(theme.breakpoints.down('md'))
 
   const [rooms, setRooms] = useState<any[]>([])
   const [room, setRoom] = useState<string>(roomRedux)
@@ -54,30 +58,44 @@ const Header: React.FC = () => {
         </Typography>
       </div>
       <div className='user'>
-        <Select
-          label='room'
-          value={room}
-          onChange={(e) => {
-            setRoom(e.target.value as string)
-            dispatch(
-              updateRoom({
-                _id: e.target.value as string,
-                sensorId: rooms.find((room: any) => room._id === e.target.value)
-                  ?.sensorId
-              })
-            )
-          }}
-        >
-          {rooms.map((room: any) => (
-            <MenuItem key={room._id} value={room._id}>
-              {room.name}
-            </MenuItem>
-          ))}
-        </Select>
+        {hidden ? null : (
+          <>
+            {' '}
+            <Button>Add Room</Button>
+            <Select
+              label='room'
+              value={room}
+              onChange={(e) => {
+                setRoom(e.target.value as string)
+                dispatch(
+                  updateRoom({
+                    _id: e.target.value as string,
+                    sensorId: rooms.find(
+                      (room: any) => room._id === e.target.value
+                    )?.sensorId
+                  })
+                )
+              }}
+            >
+              {rooms.map((room: any) => (
+                <MenuItem key={room._id} value={room._id}>
+                  {room.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </>
+        )}
         <IconButton>
           <NotificationsRounded />
         </IconButton>
-        <Avatar {...stringAvatar('David Ng')} />
+        <Avatar
+          {...stringAvatar('David Ng')}
+          sx={{
+            width: hidden ? 24 : 48,
+            height: hidden ? 24 : 48,
+            bgcolor: colors.green900
+          }}
+        />
       </div>
     </div>
   )

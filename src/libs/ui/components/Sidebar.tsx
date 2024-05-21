@@ -16,7 +16,7 @@ const StyledHeader = styled('div')(({ theme }) => ({
 
 const StyledSideBar = styled('div')(({ theme }) => ({
   height: '100vh',
-  width: '240px',
+  width: '200px',
   background: theme.palette.background.paper,
   borderRight: `2px solid ${theme.palette.divider}`,
   display: 'flex',

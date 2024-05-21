@@ -3,8 +3,6 @@
   flex-direction: column;
   gap: 2.5rem;
   height: calc(100% - 80px);
-  overflow-y: scroll;
-  scrollbar-width: none;
 }
 
 .room {
@@ -20,7 +18,7 @@
 
 .home-section {
   background: white;
-  padding: 1rem 1rem;
+  padding: 1rem;
   border-radius: 1rem;
 }
 
@@ -36,15 +34,7 @@
   flex-direction: column;
 }
 
-.sensor {
-  gap: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: calc(100% - 32px);
-}
-
-.sensor .temp {
+.sensor-temp {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -52,7 +42,7 @@
   gap: 0.5rem;
 }
 
-.sensor .text {
+.sensor-text {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -70,15 +60,6 @@
   display: flex;
   gap: 2.5rem;
   align-items: center;
-}
-
-.gauge-container {
-  position: relative;
-  background: var(--light-green);
-  width: 195px;
-  height: 195px;
-  padding: 8px;
-  border-radius: 50%;
 }
 
 .gauge {

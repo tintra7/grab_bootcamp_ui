@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Gauge, gaugeClasses } from '@mui/x-charts'
-import axios from 'axios'
 import Swal, { SweetAlertOptions } from 'sweetalert2'
 
+import { styled } from '@mui/material/'
 import Button from '@mui/material/Button'
 // import Dialog from '@mui/material/Dialog'
 // import DialogActions from '@mui/material/DialogActions'
 // import DialogContent from '@mui/material/DialogContent'
 // import DialogContentText from '@mui/material/DialogContentText'
 // import DialogTitle from '@mui/material/DialogTitle'
-import Divider from '@mui/material/Divider'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Grid from '@mui/material/Grid'
 // import MenuItem from '@mui/material/MenuItem'
@@ -18,58 +17,56 @@ import Grid from '@mui/material/Grid'
 import Switch from '@mui/material/Switch'
 // import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 import {
   AcUnitOutlined,
   AddOutlined,
   AirOutlined,
   AutoModeOutlined,
-  CloudRounded,
   RemoveOutlined,
-  ThermostatOutlined,
-  ThunderstormRounded,
-  WaterDropOutlined,
-  WbSunnyRounded,
   WindPower
 } from '@mui/icons-material'
 
-import CloudsWeather from '@/assets/images/Clouds.svg'
-import RainWeather from '@/assets/images/Rain.svg'
-import SnowWeather from '@/assets/images/Snow.svg'
-import SunnyWeather from '@/assets/images/sunny.svg'
+import { updateRoom } from '@/libs/redux/roomSlice'
 // import { BRAND } from '@/constants/enum'
 import { colors } from '@/libs/ui'
+import theme from '@/libs/ui/theme'
 import { IDevice } from '@/models/entities/deviceModel'
 import getDeviceList from '@/services/servicesDevice/getDeviceList'
 import getRoom from '@/services/servicesDevice/getRoom'
-import getSensor from '@/services/servicesDevice/getSensor'
+import getRoomList from '@/services/servicesDevice/getRoomList'
 import { errorAlert, loading } from '@/utils/sweetAlert'
+import Sensor from './components/Sensor'
+import Weather from './components/Weather'
 
 import '@/assets/css/components/Home.css'
 
+const StyledGaugeContainerSm = styled('div')(({ theme }) => ({
+  position: 'relative',
+  background: colors.green50,
+  width: '195px',
+  height: '195px',
+  padding: '0.5rem',
+  borderRadius: '50%',
+  [theme.breakpoints.down('sm')]: {
+    width: '120px',
+    height: '120px',
+    padding: '0.25rem'
+  }
+}))
+
 const Home: React.FC = () => {
   const room = useSelector((state: any) => state.room._id)
+  const hidden = useMediaQuery(theme.breakpoints.down('sm'))
+  const dispatch = useDispatch()
 
   const [deviceList, setDeviceList] = useState<IDevice[]>([])
   const [roomData, setRoomData] = useState<any>({})
-  const [sensorData, setSensorData] = useState<any>({})
   const [selectedDevice, setSelectedDevice] = useState<any>({})
-  const [weatherData, setWeatherData] = useState<any>({})
-  // const [open, setOpen] = useState(false)
 
-  async function getWeather(lat: number, lon: number) {
-    try {
-      const API_KEY = import.meta.env.VITE_WEATHER_API_KEY
-      const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
-      )
-      const data = await response.data
-      return data
-    } catch (error) {
-      console.error(error)
-      return []
-    }
-  }
+  // const [open, setOpen] = useState(false)
+  const [rooms, setRooms] = useState<any[]>([])
 
   useEffect(() => {
     getDeviceList(room)
@@ -85,68 +82,21 @@ const Home: React.FC = () => {
   }, [room])
 
   useEffect(() => {
-    getRoom(room)
-      .then((item) => {
-        setRoomData(item)
-      })
-      .catch(() =>
-        Swal.fire(errorAlert('Failed to get room by id !') as SweetAlertOptions)
-      )
+    room &&
+      getRoom(room)
+        .then((item) => {
+          setRoomData(item)
+        })
+        .catch(() =>
+          Swal.fire(
+            errorAlert('Failed to get room by id !') as SweetAlertOptions
+          )
+        )
   }, [room])
-
-  useEffect(() => {
-    // interval to get sensor data every 5 seconds
-    Swal.fire(loading)
-    const interval = setInterval(() => {
-      roomData.sensorId &&
-        getSensor(roomData.sensorId)
-          .then((sensor) => {
-            Swal.close()
-            setSensorData(sensor)
-          })
-          .catch(() =>
-            Swal.fire(
-              errorAlert('Failed to get sensor data !') as SweetAlertOptions
-            )
-          )
-    }, 5000)
-
-    return () => clearInterval(interval)
-  }, [roomData])
-
-  useEffect(() => {
-    Swal.fire(loading)
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
-        const lat = position.coords.latitude
-        const lon = position.coords.longitude
-        getWeather(lat, lon)
-          .then((data) => {
-            setWeatherData(data)
-            Swal.close()
-          })
-          .catch(() =>
-            Swal.fire(
-              errorAlert('Failed to get weather data !') as SweetAlertOptions
-            )
-          )
-      },
-      function (error) {
-        console.error('Error Code = ' + error.code + ' - ' + error.message)
-      }
-    )
-  }, [])
 
   const handleCardOnClick = (device: IDevice) => {
     setSelectedDevice(device)
   }
-
-  const date = new Date()
-  const formattedDate = new Intl.DateTimeFormat('en-US', {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
-  }).format(date)
 
   // const handleNewDeviceOpen = () => {
   //   setOpen(true)
@@ -156,93 +106,58 @@ const Home: React.FC = () => {
   //   setOpen(false)
   // }
 
+  useEffect(() => {
+    Swal.fire(loading)
+    getRoomList()
+      .then((rooms) => {
+        Swal.close()
+        setRooms(rooms)
+      })
+      .catch(() => Swal.fire('Failed to get rooms'))
+  }, [])
+
   return (
     <div className='home-container'>
       <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <div className='home-section weather'>
-            <div>
-              <Typography
-                variant='subtitle2'
-                fontWeight={600}
-                color='textSecondary'
-              >
-                {formattedDate}
-              </Typography>
-              <Typography variant='h6' fontWeight={700}>
-                {weatherData.name}
-              </Typography>
-            </div>
-            <div className='weather-info'>
-              <div>
-                <Typography variant='h4' fontWeight={600}>
-                  {weatherData ? Math.round(weatherData.main?.temp) : 28}°C
-                </Typography>
-                <div className='weather-status'>
-                  {weatherData &&
-                  weatherData.weather &&
-                  weatherData.weather[0] ? (
-                    weatherData.weather[0].main === 'Clear' ? (
-                      <WbSunnyRounded />
-                    ) : weatherData.weather[0].main === 'Clouds' ? (
-                      <CloudRounded />
-                    ) : weatherData.weather[0].main === 'Rain' ? (
-                      <ThunderstormRounded />
-                    ) : (
-                      <AcUnitOutlined />
-                    )
-                  ) : (
-                    <AcUnitOutlined />
-                  )}
-                  <Typography
-                    variant='subtitle1'
-                    fontWeight={600}
-                    color='textSecondary'
-                  >
-                    {weatherData &&
-                      weatherData.weather &&
-                      weatherData.weather[0] &&
-                      weatherData.weather[0].main}
-                  </Typography>
-                </div>
-              </div>
-              <img
-                src={
-                  weatherData && weatherData.weather && weatherData.weather[0]
-                    ? weatherData.weather[0].main === 'Clear'
-                      ? SunnyWeather
-                      : weatherData.weather[0].main === 'Clouds'
-                      ? CloudsWeather
-                      : weatherData.weather[0].main === 'Rain'
-                      ? RainWeather
-                      : SnowWeather
-                    : undefined
-                }
-                alt={
-                  weatherData &&
-                  weatherData.weather &&
-                  weatherData.weather[0] &&
-                  weatherData.weather[0].main
-                }
-              />
-            </div>
-          </div>
+        <Grid item xs={12} sm={3}>
+          <Weather />
         </Grid>
-        <Grid item xs={7}>
+        {hidden && (
+          <Grid item xs={12}>
+            <div>
+              {rooms.map((room) => (
+                <Button
+                  key={room._id}
+                  onClick={() => {
+                    dispatch(
+                      updateRoom({ _id: room._id, sensorId: room.sensorId })
+                    )
+                  }}
+                  variant={room._id === roomData._id ? 'contained' : 'outlined'}
+                  disableElevation
+                >
+                  {room.name}
+                </Button>
+              ))}
+            </div>
+          </Grid>
+        )}
+        <Grid item xs={12} sm={7}>
           <div className='home-section device'>
             <div className='device-header'>
               <Typography variant='h6' fontWeight={500}>
-                {selectedDevice.name}
+                {selectedDevice && selectedDevice.name}
               </Typography>
               <FormControlLabel
                 value='start'
                 control={
                   <Switch
                     color='primary'
-                    checked={selectedDevice.status === 'ON'}
+                    checked={selectedDevice && selectedDevice.status === 'ON'}
+                    size={hidden ? 'small' : 'medium'}
                   />
                 }
-                label={selectedDevice.status}
+                label={selectedDevice && selectedDevice.status}
                 labelPlacement='start'
               />
             </div>
@@ -260,23 +175,23 @@ const Home: React.FC = () => {
                     variant='contained'
                     color='info'
                     disableElevation
-                    sx={{ borderRadius: '48px', height: 'fit-content' }}
+                    sx={{ borderRadius: '50%', height: 'fit-content' }}
                   >
                     <RemoveOutlined />
                   </Button>
-                  <div className='gauge-container'>
+                  <StyledGaugeContainerSm>
                     <Gauge
-                      value={selectedDevice.temp}
+                      value={selectedDevice && selectedDevice.temp}
                       startAngle={-110}
                       endAngle={110}
-                      width={195}
-                      height={140}
+                      width={hidden ? 120 : 195}
+                      height={hidden ? 86 : 140}
                       valueMin={16}
                       valueMax={30}
                       cornerRadius='50%'
                       sx={{
                         [`& .${gaugeClasses.valueText}`]: {
-                          fontSize: 34,
+                          fontSize: hidden ? 20 : 34,
                           fontWeight: 600,
                           transform: 'translate(0px, 0px)',
                           fontFamily: 'Be Vietnam Pro, sans-serif'
@@ -287,12 +202,12 @@ const Home: React.FC = () => {
                       }}
                       text={({ value }) => `${value}°C`}
                     />
-                  </div>
+                  </StyledGaugeContainerSm>
                   <Button
                     variant='contained'
                     color='info'
                     disableElevation
-                    sx={{ borderRadius: '48px', height: 'fit-content' }}
+                    sx={{ borderRadius: '50%', height: 'fit-content' }}
                   >
                     <AddOutlined />
                   </Button>
@@ -307,7 +222,9 @@ const Home: React.FC = () => {
                 >
                   <Button
                     variant={
-                      selectedDevice.fan === 'HIGH' ? 'contained' : 'outlined'
+                      selectedDevice && selectedDevice.fan === 'HIGH'
+                        ? 'contained'
+                        : 'outlined'
                     }
                     disableElevation
                     sx={{ height: 'fit-content' }}
@@ -315,7 +232,7 @@ const Home: React.FC = () => {
                       <WindPower
                         sx={{
                           color:
-                            selectedDevice.fan === 'HIGH'
+                            selectedDevice && selectedDevice.fan === 'HIGH'
                               ? 'white'
                               : colors.green500
                         }}
@@ -326,7 +243,9 @@ const Home: React.FC = () => {
                   </Button>
                   <Button
                     variant={
-                      selectedDevice.fan === 'MEDIUM' ? 'contained' : 'outlined'
+                      selectedDevice && selectedDevice.fan === 'MEDIUM'
+                        ? 'contained'
+                        : 'outlined'
                     }
                     disableElevation
                     sx={{ height: 'fit-content' }}
@@ -334,7 +253,7 @@ const Home: React.FC = () => {
                       <WindPower
                         sx={{
                           color:
-                            selectedDevice.fan === 'MEDIUM'
+                            selectedDevice && selectedDevice.fan === 'MEDIUM'
                               ? 'white'
                               : colors.green500
                         }}
@@ -345,7 +264,9 @@ const Home: React.FC = () => {
                   </Button>
                   <Button
                     variant={
-                      selectedDevice.fan === 'LOW' ? 'contained' : 'outlined'
+                      selectedDevice && selectedDevice.fan === 'LOW'
+                        ? 'contained'
+                        : 'outlined'
                     }
                     disableElevation
                     sx={{ height: 'fit-content' }}
@@ -353,7 +274,7 @@ const Home: React.FC = () => {
                       <WindPower
                         sx={{
                           color:
-                            selectedDevice.fan === 'LOW'
+                            selectedDevice && selectedDevice.fan === 'LOW'
                               ? 'white'
                               : colors.green500
                         }}
@@ -368,6 +289,7 @@ const Home: React.FC = () => {
                 <Button
                   variant='contained'
                   color={
+                    selectedDevice &&
                     selectedDevice.currentProfile === 'MOISTURING'
                       ? 'primary'
                       : 'info'
@@ -377,6 +299,7 @@ const Home: React.FC = () => {
                   <AirOutlined
                     sx={{
                       color:
+                        selectedDevice &&
                         selectedDevice.currentProfile === 'MOISTURING'
                           ? 'white'
                           : 'primary'
@@ -386,6 +309,7 @@ const Home: React.FC = () => {
                 <Button
                   variant='contained'
                   color={
+                    selectedDevice &&
                     selectedDevice.currentProfile === 'COOLING'
                       ? 'primary'
                       : 'info'
@@ -395,6 +319,7 @@ const Home: React.FC = () => {
                   <AcUnitOutlined
                     sx={{
                       color:
+                        selectedDevice &&
                         selectedDevice.currentProfile === 'COOLING'
                           ? 'white'
                           : 'primary'
@@ -404,6 +329,7 @@ const Home: React.FC = () => {
                 <Button
                   variant='contained'
                   color={
+                    selectedDevice &&
                     selectedDevice.currentProfile === 'DEFAULT'
                       ? 'primary'
                       : 'info'
@@ -413,6 +339,7 @@ const Home: React.FC = () => {
                   <AutoModeOutlined
                     sx={{
                       color:
+                        selectedDevice &&
                         selectedDevice.currentProfile === 'DEFAULT'
                           ? 'white'
                           : 'primary'
@@ -423,36 +350,12 @@ const Home: React.FC = () => {
             </div>
           </div>
         </Grid>
-        <Grid item xs={2}>
-          <div className='home-section sensor'>
-            <div className='temp'>
-              <Typography variant='subtitle1' fontWeight={600}>
-                Temperature
-              </Typography>
-              <div className='text'>
-                <ThermostatOutlined />
-                <Typography variant='h4' fontWeight={600}>
-                  {sensorData.temp}°C
-                </Typography>
-              </div>
-            </div>
-            <Divider />
-            <div className='temp'>
-              <Typography variant='subtitle1' fontWeight={600}>
-                Humidity
-              </Typography>
-              <div className='text'>
-                <WaterDropOutlined />
-                <Typography variant='h4' fontWeight={600}>
-                  {sensorData.humidity}%
-                </Typography>
-              </div>
-            </div>
-          </div>
+        <Grid item xs={12} sm={2}>
+          <Sensor roomData={roomData} />
         </Grid>
       </Grid>
       <Grid container spacing={2}>
-        <Grid item xs={9}>
+        <Grid item xs={12} sm={9}>
           <div className='device-list'>
             <div className='header'>
               <Typography variant='h6' fontWeight={600}>
@@ -502,7 +405,7 @@ const Home: React.FC = () => {
               sx={{ overflowX: 'scroll', scrollbarWidth: 'none' }}
             >
               {deviceList.map((device) => (
-                <Grid item xs={3} key={device._id}>
+                <Grid item xs={6} sm={3} key={device._id}>
                   <div
                     className='card'
                     style={{
@@ -517,6 +420,7 @@ const Home: React.FC = () => {
                       <Switch
                         color='primary'
                         checked={device.status === 'ON'}
+                        size={hidden ? 'small' : 'medium'}
                       />
                     </div>
                     <div className='info'>
@@ -543,16 +447,18 @@ const Home: React.FC = () => {
             </Grid>
           </div>
         </Grid>
-        <Grid item xs={3}>
-          <div className='room'>
-            <Typography variant='subtitle1' fontWeight={700}>
-              {roomData.name}
-            </Typography>
-            <Typography variant='subtitle2' color={colors.black100}>
-              {roomData.width}m x {roomData.height}m
-            </Typography>
-          </div>
-        </Grid>
+        {!hidden && (
+          <Grid item xs={12} sm={3}>
+            <div className='room'>
+              <Typography variant='subtitle1' fontWeight={700}>
+                {roomData.name}
+              </Typography>
+              <Typography variant='subtitle2' color={colors.black100}>
+                {roomData.width}m x {roomData.height}m
+              </Typography>
+            </div>
+          </Grid>
+        )}
       </Grid>
     </div>
   )
