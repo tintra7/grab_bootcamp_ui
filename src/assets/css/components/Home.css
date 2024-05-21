@@ -20,7 +20,7 @@
 
 .home-section {
   background: white;
-  padding: 1.25rem 1rem;
+  padding: 1rem 1rem;
   border-radius: 1rem;
 }
 
@@ -28,13 +28,12 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  height: calc(100% - 40px);
+  height: calc(100% - 32px);
 }
 
 .device {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
 .sensor {
@@ -42,7 +41,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: calc(100% - 40px);
+  height: calc(100% - 32px);
 }
 
 .sensor .temp {
@@ -83,7 +82,6 @@
 }
 
 .gauge {
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -109,7 +107,6 @@
 }
 
 .device-list .card {
-  background: white;
   border-radius: 0.5rem;
   padding: 1rem;
   display: flex;
@@ -130,6 +127,7 @@
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  height: 100%;
 }
 
 .weather-status {
