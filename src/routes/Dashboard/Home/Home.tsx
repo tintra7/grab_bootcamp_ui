@@ -3,19 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Gauge, gaugeClasses } from '@mui/x-charts'
 import Swal, { SweetAlertOptions } from 'sweetalert2'
 
-import { FormControl, InputAdornment, InputLabel, styled } from '@mui/material/'
+import { styled } from '@mui/material/'
 import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
+
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Grid from '@mui/material/Grid'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
+
 import Switch from '@mui/material/Switch'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
@@ -25,11 +19,9 @@ import {
   OpacityRounded,
   RemoveOutlined,
   SettingsRounded,
-  ThermostatOutlined,
   WindPower
 } from '@mui/icons-material'
 
-import { BRAND } from '@/constants/enum'
 import { updateRoom } from '@/libs/redux/roomSlice'
 import { colors } from '@/libs/ui'
 import theme from '@/libs/ui/theme'
@@ -37,11 +29,17 @@ import { IDevice } from '@/models/entities/deviceModel'
 import getDeviceList from '@/services/servicesDevice/getDeviceList'
 import getRoom from '@/services/servicesDevice/getRoom'
 import getRoomList from '@/services/servicesDevice/getRoomList'
-import { errorAlert, loading } from '@/utils/sweetAlert'
+import { errorAlert, loading, successAlert } from '@/utils/sweetAlert'
 import Sensor from './components/Sensor'
 import Weather from './components/Weather'
 
 import '@/assets/css/components/Home.css'
+import NewDeviceDialog from './components/NewDeviceDialog'
+import linkNewDevice from '@/services/servicesDevice/linkNewDevice'
+import {
+  LinkDeviceRequest,
+  initialLinkDeviceRequest
+} from '@/models/requests/DeviceRequest/linkDeviceRequest'
 
 const StyledGaugeContainerSm = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -65,9 +63,12 @@ const Home: React.FC = () => {
   const [deviceList, setDeviceList] = useState<IDevice[]>([])
   const [roomData, setRoomData] = useState<any>({})
   const [selectedDevice, setSelectedDevice] = useState<any>({})
-
   const [open, setOpen] = useState(false)
   const [rooms, setRooms] = useState<any[]>([])
+  const [newDevice, setNewDevice] = useState<LinkDeviceRequest>(
+    initialLinkDeviceRequest
+  )
+  const [createSuccess, setCreateSuccess] = useState(false)
 
   useEffect(() => {
     getDeviceList(room)
@@ -83,7 +84,7 @@ const Home: React.FC = () => {
   }, [room])
 
   useEffect(() => {
-    room &&
+    if (room) {
       getRoom(room)
         .then((item) => {
           setRoomData(item)
@@ -93,6 +94,9 @@ const Home: React.FC = () => {
             errorAlert('Failed to get room by id !') as SweetAlertOptions
           )
         )
+
+      setNewDevice({ ...newDevice, roomId: room })
+    }
   }, [room])
 
   const handleCardOnClick = (device: IDevice) => {
@@ -116,6 +120,39 @@ const Home: React.FC = () => {
       })
       .catch(() => Swal.fire('Failed to get rooms'))
   }, [])
+
+  useEffect(() => {
+    if (createSuccess) {
+      getDeviceList(room)
+        .then((devices) => {
+          setDeviceList(devices)
+        })
+        .catch(() =>
+          Swal.fire(
+            errorAlert('Failed to get device list !') as SweetAlertOptions
+          )
+        )
+      setCreateSuccess(false)
+    }
+  }, [createSuccess])
+
+  const handleNewDevice = async () => {
+    handleNewDeviceClose()
+    if (newDevice && newDevice.name.trim() != '') {
+      Swal.fire(loading)
+      try {
+        await linkNewDevice(newDevice)
+        setCreateSuccess(true)
+        Swal.fire(
+          successAlert('Successfully linked new device !') as SweetAlertOptions
+        )
+      } catch (error) {
+        Swal.fire(errorAlert('Failed to link new device') as SweetAlertOptions)
+      }
+    } else {
+      Swal.fire(errorAlert('Missing name !') as SweetAlertOptions)
+    }
+  }
 
   return (
     <div className='home-container'>
@@ -373,140 +410,14 @@ const Home: React.FC = () => {
               >
                 Add Device
               </Button>
-              <Dialog
+              <NewDeviceDialog
                 open={open}
-                onClose={handleNewDeviceClose}
-                scroll='paper'
-                fullScreen={hidden}
-                fullWidth={true}
-                maxWidth='sm'
-              >
-                <DialogTitle>{'Link New Device to Room'}</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Provide name and Room for new air conditioner
-                  </DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin='dense'
-                    id='name'
-                    label='Name'
-                    type='text'
-                    fullWidth
-                  />
-                  <FormControl fullWidth margin='dense'>
-                    <InputLabel id='brand-select-label'>Brand</InputLabel>
-                    <Select
-                      fullWidth
-                      label='Brand'
-                      labelId='brand-select-label'
-                    >
-                      {Object.entries(BRAND).map(([key, brand]) => (
-                        <MenuItem key={key} value={key}>
-                          {brand}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <FormControl fullWidth margin='dense'>
-                    <InputLabel id='room-select-label'>Room</InputLabel>
-                    <Select
-                      fullWidth
-                      label='Room'
-                      labelId='room-select-label'
-                      value={room}
-                      inputProps={{ readOnly: true }}
-                    >
-                      {rooms.map((room) => (
-                        <MenuItem key={room._id} value={room._id}>
-                          {room.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <div style={{ margin: '8px 0 4px' }}>
-                    <Typography variant='subtitle2'>Profile</Typography>
-                    <Grid container spacing={1}>
-                      <Grid item xs={4}>
-                        <Grid container spacing={2}>
-                          <Grid item xs={12}>
-                            <Button
-                              variant='text'
-                              startIcon={<AcUnitOutlined />}
-                              disableElevation
-                            >
-                              COOLING
-                            </Button>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Button
-                              variant='text'
-                              startIcon={<OpacityRounded />}
-                              disableElevation
-                            >
-                              MOISTURING
-                            </Button>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Button
-                              variant='text'
-                              startIcon={<SettingsRounded />}
-                              disableElevation
-                            >
-                              DEFAULT
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                      <Grid item xs={3}>
-                        <Grid container spacing={2}>
-                          <Grid item xs={12}>
-                            <TextField
-                              label='Temperature'
-                              sx={{ m: 1 }}
-                              InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position='end'>
-                                    <ThermostatOutlined />
-                                  </InputAdornment>
-                                )
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={12}></Grid>
-                          <Grid item xs={12}></Grid>
-                        </Grid>
-                      </Grid>
-                      <Grid item xs={5}>
-                        <Grid container spacing={2}>
-                          <Grid item xs={12}>
-                            <TextField
-                              label='With normal TextField'
-                              id='outlined-start-adornment'
-                              sx={{ m: 1, width: '25ch' }}
-                              InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position='start'>
-                                    kg
-                                  </InputAdornment>
-                                )
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={12}></Grid>
-                          <Grid item xs={12}></Grid>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </div>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleNewDeviceClose}>Disagree</Button>
-                  <Button onClick={handleNewDeviceClose} autoFocus>
-                    Agree
-                  </Button>
-                </DialogActions>
-              </Dialog>
+                handleClose={handleNewDeviceClose}
+                handleSubmit={handleNewDevice}
+                rooms={rooms}
+                room={room}
+                setNewDevice={setNewDevice as any}
+              />
             </div>
             <Grid
               container

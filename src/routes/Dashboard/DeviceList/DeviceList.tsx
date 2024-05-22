@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react'
+import Swal, { SweetAlertOptions } from 'sweetalert2'
 
-import DeviceCardOn from './DeviceCardOn'
-import DeviceCardOff from './DeviceCardOff'
-
-import '@/assets/css/components/DeviceList/DeviceList.css'
-
+import { STATUS } from '@/constants/enum'
 import { IDevice } from '@/models/entities/deviceModel'
 import getDeviceList from '@/services/servicesDevice/getDeviceList'
+import { errorAlert, loading } from '@/utils/sweetAlert'
+import DeviceCardOff from './DeviceCardOff'
+import DeviceCardOn from './DeviceCardOn'
 
-import Swal, { SweetAlertOptions } from 'sweetalert2'
-import { loading, errorAlert } from '@/utils/sweetAlert'
-import { STATUS } from '@/constants/enum'
+import '@/assets/css/components/DeviceList/DeviceList.css'
+import Grid from '@mui/material/Grid'
 
 const DeviceList: React.FC = () => {
   const [deviceList, setDeviceList] = useState<IDevice[]>([])
@@ -40,21 +39,25 @@ const DeviceList: React.FC = () => {
 
   return (
     <div className='devices-container'>
-      {deviceList.map((device) =>
-        device.status == STATUS.ON ? (
-          <DeviceCardOn
-            key={device._id}
-            device={device}
-            updateDeviceList={updateDeviceList}
-          />
-        ) : (
-          <DeviceCardOff
-            key={device._id}
-            device={device}
-            updateDeviceList={updateDeviceList}
-          />
-        )
-      )}
+      <Grid container spacing={2}>
+        {deviceList.map((device) => (
+          <Grid item xs={12} sm={4}>
+            {device.status == STATUS.ON ? (
+              <DeviceCardOn
+                key={device._id}
+                device={device}
+                updateDeviceList={updateDeviceList}
+              />
+            ) : (
+              <DeviceCardOff
+                key={device._id}
+                device={device}
+                updateDeviceList={updateDeviceList}
+              />
+            )}
+          </Grid>
+        ))}
+      </Grid>
     </div>
   )
 }

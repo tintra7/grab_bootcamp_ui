@@ -1,18 +1,18 @@
-import { IProfile } from '../../entities/deviceModel'
 import { BRAND, FANSPEED, MODE } from '@/constants/enum'
+import { IProfile } from '../../entities/deviceModel'
 
 export interface LinkDeviceRequest {
-  userId: string
   name: string
   brand: BRAND
+  roomId: string
   profile: {
     [key in MODE]: IProfile
   }
 }
 
 export const initialLinkDeviceRequest: LinkDeviceRequest = {
-  userId: 'empty',
   name: '',
+  roomId: '',
   brand: BRAND.TOSHIBA,
   profile: {
     COOLING: {
