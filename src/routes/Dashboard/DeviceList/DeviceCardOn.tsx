@@ -1,27 +1,27 @@
-import { useRef, useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import debounce from 'lodash/debounce'
+import Swal, { SweetAlertOptions } from 'sweetalert2'
 
-import Brand from './Brand'
-import ModeButtonGroup from './ModeButtonGroup'
-import PowerButtonGroup from './PowerButtonGroup'
+import Grid from '@mui/material/Grid'
+
+import AcUnitIcon from '@mui/icons-material/AcUnit'
+import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
 import EditIcon from '@mui/icons-material/Edit'
 import WaterDropIcon from '@mui/icons-material/WaterDrop'
-import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
-import AcUnitIcon from '@mui/icons-material/AcUnit'
 import WindPowerIcon from '@mui/icons-material/WindPower'
 
 import ACOn from '@/assets/images/air-conditioner_on.png'
-import '@/assets/css/components/DeviceList/DeviceCard.css'
-
-import sendSignal from '@/services/servicesDevice/sendSignal'
-import getStats from '@/services/servicesDevice/getStats'
-
-import { IDevice } from '@/models/entities/deviceModel'
 import { FANSPEED, MODE, STATUS } from '@/constants/enum'
+import { IDevice } from '@/models/entities/deviceModel'
 import SendSignalRequest from '@/models/requests/DeviceRequest/sendSignalRequest'
-
-import Swal, { SweetAlertOptions } from 'sweetalert2'
+import getStats from '@/services/servicesDevice/getStats'
+import sendSignal from '@/services/servicesDevice/sendSignal'
 import { warningAlert } from '@/utils/sweetAlert'
+import Brand from './Brand'
+import ModeButtonGroup from './ModeButtonGroup'
+import PowerButtonGroup from './PowerButtonGroup'
+
+import '@/assets/css/components/DeviceList/DeviceCard.css'
 
 interface DeviceCardProp {
   device: IDevice
@@ -33,10 +33,11 @@ const DeviceCardOn = ({
   updateDeviceList
 }: DeviceCardProp): JSX.Element => {
   const tempControl = useRef<HTMLInputElement>(null)
+
   const [fan, setFan] = useState<FANSPEED>(device.fan)
   const [temp, setTemp] = useState<number>(device.temp)
-  const [envTemp, setEnvTemp] = useState<number>(device.envTemp)
-  const [humidity, setHumidity] = useState<number>(device.humidity)
+  const [envTemp, setEnvTemp] = useState<number>(28)
+  const [humidity, setHumidity] = useState<number>(50)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -71,7 +72,6 @@ const DeviceCardOn = ({
   }): SendSignalRequest => {
     return {
       deviceId: device._id,
-      userId: 'test',
       status: optionalPara.status || STATUS.ON,
       profile: optionalPara.profile || device.currentProfile,
       temp: optionalPara.temp || device.temp,
@@ -161,45 +161,55 @@ const DeviceCardOn = ({
         </div>
       </div>
       <div className='card-body'>
-        <div className='ac-img-container'>
-          <img src={ACOn} />
-        </div>
-        <div className='fan-controler-container'>
-          <WindPowerIcon className='stat-icon fan' />
-          <div
-            className={`fan-speed ${fan == FANSPEED.HIGH ? 'current' : ''}`}
-            onClick={() => onFanChange(FANSPEED.HIGH)}
-          >
-            HIGH
-          </div>
-          <div
-            className={`fan-speed ${fan == FANSPEED.MEDIUM ? 'current' : ''}`}
-            onClick={() => onFanChange(FANSPEED.MEDIUM)}
-          >
-            MED
-          </div>
-          <div
-            className={`fan-speed ${fan == FANSPEED.LOW ? 'current' : ''}`}
-            onClick={() => onFanChange(FANSPEED.LOW)}
-          >
-            LOW
-          </div>
-        </div>
-        <div className='stats-container'>
-          <div className='stat'>
-            <WaterDropIcon className='stat-icon humidity' />
-            <span>{humidity == -1 ? '--' : humidity}%</span>
-          </div>
-          <div className='stat'>
-            <DeviceThermostatIcon className='stat-icon temp' />
-            <span>{envTemp == -1 ? '--' : Math.floor(envTemp)}°C</span>
-          </div>
-          <hr className='stat-divider'></hr>
-          <div className='stat'>
-            <AcUnitIcon className='stat-icon humidity' />
-            <span>{temp}°C</span>
-          </div>
-        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <div className='ac-img-container'>
+              <img src={ACOn} />
+            </div>
+          </Grid>
+          <Grid item xs={4}>
+            <div className='fan-controler-container'>
+              <WindPowerIcon className='stat-icon fan' />
+              <div
+                className={`fan-speed ${fan == FANSPEED.HIGH ? 'current' : ''}`}
+                onClick={() => onFanChange(FANSPEED.HIGH)}
+              >
+                HIGH
+              </div>
+              <div
+                className={`fan-speed ${
+                  fan == FANSPEED.MEDIUM ? 'current' : ''
+                }`}
+                onClick={() => onFanChange(FANSPEED.MEDIUM)}
+              >
+                MED
+              </div>
+              <div
+                className={`fan-speed ${fan == FANSPEED.LOW ? 'current' : ''}`}
+                onClick={() => onFanChange(FANSPEED.LOW)}
+              >
+                LOW
+              </div>
+            </div>
+          </Grid>
+          <Grid item xs={4}>
+            <div className='stats-container'>
+              <div className='stat'>
+                <WaterDropIcon className='stat-icon humidity' />
+                <span>{humidity == -1 ? '--' : humidity}%</span>
+              </div>
+              <div className='stat'>
+                <DeviceThermostatIcon className='stat-icon temp' />
+                <span>{envTemp == -1 ? '--' : Math.floor(envTemp)}°C</span>
+              </div>
+              <hr className='stat-divider'></hr>
+              <div className='stat'>
+                <AcUnitIcon className='stat-icon humidity' />
+                <span>{temp}°C</span>
+              </div>
+            </div>
+          </Grid>
+        </Grid>
       </div>
       <div className='slide-bar-container'>
         <AcUnitIcon className='stat-icon humidity' />

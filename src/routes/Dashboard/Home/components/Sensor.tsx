@@ -44,7 +44,7 @@ export default function Sensor({ roomData }: any) {
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [roomData])
+  }, [roomData.sensorId])
 
   return (
     <StyleSensorSectionSm>

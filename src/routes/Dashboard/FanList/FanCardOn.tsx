@@ -1,39 +1,32 @@
-import { useRef, useState, useEffect } from 'react'
-// import debounce from 'lodash/debounce'
+import { useEffect, useRef, useState } from 'react'
+import Swal, { SweetAlertOptions } from 'sweetalert2'
 
+import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
+// import debounce from 'lodash/debounce'
 import EditIcon from '@mui/icons-material/Edit'
 import WaterDropIcon from '@mui/icons-material/WaterDrop'
-import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
-import FanPowerButtonGroup from '../FanList/FanPowerButtonGroup'
 
 import FanON from '@/assets/images/fan-on.png'
-import '@/assets/css/components/DeviceList/DeviceCard.css'
-
+import { FANLIGHT, FANSPEEDFORFAN, FANSWING, STATUS } from '@/constants/enum'
+import { IFan } from '@/models/entities/fanModel'
+import SendFanSignalRequest from '@/models/requests/FanRequest/sendFanSignalRequest'
+import SendFanSpeedSignalRequest from '@/models/requests/FanRequest/sendFanSpeedSignalRequest'
 import getFanStats from '@/services/servicesFan/getFanStats'
 import sendFanSignal from '@/services/servicesFan/sendFanSignal'
 import sendFanSpeedSignal from '@/services/servicesFan/sendFanSpeedSignal'
-
-import { FANLIGHT, FANSPEEDFORFAN, FANSWING, STATUS } from '@/constants/enum'
-import { IFan } from '@/models/entities/fanModel'
-
-import Swal, { SweetAlertOptions } from 'sweetalert2'
 import { warningAlert } from '@/utils/sweetAlert'
-
-import SendFanSignalRequest from '@/models/requests/FanRequest/sendFanSignalRequest'
-import FanIncreaseButtonGroup from './FanIncreaseButtonGroup'
-import SendFanSpeedSignalRequest from '@/models/requests/FanRequest/sendFanSpeedSignalRequest'
+import FanPowerButtonGroup from '../FanList/FanPowerButtonGroup'
 import FanDecreaseButtonGroup from './FanDecreaseButtonGroup'
+import FanIncreaseButtonGroup from './FanIncreaseButtonGroup'
 
+import '@/assets/css/components/DeviceList/DeviceCard.css'
 
 interface FanCardProp {
   fan: IFan
   updateFanList: (fan: IFan) => void
 }
 
-const FanCardOn = ({ 
-    fan, 
-    updateFanList 
-}: FanCardProp): JSX.Element => {
+const FanCardOn = ({ fan, updateFanList }: FanCardProp): JSX.Element => {
   const [fanSpeed, setFanSpeed] = useState<FANSPEEDFORFAN>(fan.fanSpeed)
   const [light, setLight] = useState<FANLIGHT>(fan.light)
   const [swing, setSwing] = useState<FANSWING>(fan.swing)
@@ -114,7 +107,9 @@ const FanCardOn = ({
       setIsLoading(true)
       updateFanList({ ...fan, fanSpeed: FANSPEEDFORFAN.INCREASE })
 
-      await sendFanSpeedSignal(craftSendFanSpeedSignalRequest({ fanspeed: FANSPEEDFORFAN.INCREASE }))
+      await sendFanSpeedSignal(
+        craftSendFanSpeedSignalRequest({ fanspeed: FANSPEEDFORFAN.INCREASE })
+      )
     } catch (e) {
       console.log(e)
     } finally {
@@ -127,7 +122,9 @@ const FanCardOn = ({
       setIsLoading(true)
       updateFanList({ ...fan, fanSpeed: FANSPEEDFORFAN.DECREASE })
 
-      await sendFanSpeedSignal(craftSendFanSpeedSignalRequest({ fanspeed: FANSPEEDFORFAN.DECREASE }))
+      await sendFanSpeedSignal(
+        craftSendFanSpeedSignalRequest({ fanspeed: FANSPEEDFORFAN.DECREASE })
+      )
     } catch (e) {
       console.log(e)
     } finally {
@@ -204,9 +201,15 @@ const FanCardOn = ({
         </div>
       </div>
       <div className='card-footer'>
-          <FanDecreaseButtonGroup fanSpeed={fan.fanSpeed} onClick={onClickFanSpeedDecreaseControlChange}/>
-          <FanIncreaseButtonGroup fanSpeed={fan.fanSpeed} onClick={onClickFanSpeedIncreaseControlChange}/>
-          <FanPowerButtonGroup status={fan.status} onClick={onClickOff}/>
+        <FanDecreaseButtonGroup
+          fanSpeed={fan.fanSpeed}
+          onClick={onClickFanSpeedDecreaseControlChange}
+        />
+        <FanIncreaseButtonGroup
+          fanSpeed={fan.fanSpeed}
+          onClick={onClickFanSpeedIncreaseControlChange}
+        />
+        <FanPowerButtonGroup status={fan.status} onClick={onClickOff} />
       </div>
     </div>
   )

@@ -1,9 +1,3 @@
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-
 import {
   Button,
   FormControl,
@@ -12,20 +6,25 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material/'
-
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 
-import { BRAND, MODE } from '@/constants/enum'
-import ProfileRow from './ProfileRow'
-import theme from '@/libs/ui/theme'
 import {
   AcUnitOutlined,
   OpacityOutlined,
   SettingsRounded
 } from '@mui/icons-material'
+
+import { BRAND, MODE } from '@/constants/enum'
+import theme from '@/libs/ui/theme'
 import { IDevice } from '@/models/entities/deviceModel'
+import ProfileRow from './ProfileRow'
 
 interface NewDeviceDialogProps {
   open: boolean

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import Swal, { SweetAlertOptions } from 'sweetalert2'
 
+import Grid from '@mui/material/Grid'
+
 import { STATUS } from '@/constants/enum'
 import { IDevice } from '@/models/entities/deviceModel'
 import getDeviceList from '@/services/servicesDevice/getDeviceList'
@@ -9,7 +11,6 @@ import DeviceCardOff from './DeviceCardOff'
 import DeviceCardOn from './DeviceCardOn'
 
 import '@/assets/css/components/DeviceList/DeviceList.css'
-import Grid from '@mui/material/Grid'
 
 const DeviceList: React.FC = () => {
   const [deviceList, setDeviceList] = useState<IDevice[]>([])
@@ -39,9 +40,9 @@ const DeviceList: React.FC = () => {
 
   return (
     <div className='devices-container'>
-      <Grid container spacing={2}>
+      <Grid container spacing={3} alignItems='center' sx={{ height: '100%' }}>
         {deviceList.map((device) => (
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} key={device._id}>
             {device.status == STATUS.ON ? (
               <DeviceCardOn
                 key={device._id}

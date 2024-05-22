@@ -5,10 +5,8 @@ import Swal, { SweetAlertOptions } from 'sweetalert2'
 
 import { styled } from '@mui/material/'
 import Button from '@mui/material/Button'
-
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Grid from '@mui/material/Grid'
-
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -22,24 +20,28 @@ import {
   WindPower
 } from '@mui/icons-material'
 
+import { FANSPEED } from '@/constants/enum'
 import { updateRoom } from '@/libs/redux/roomSlice'
 import { colors } from '@/libs/ui'
 import theme from '@/libs/ui/theme'
 import { IDevice } from '@/models/entities/deviceModel'
+import {
+  initialLinkDeviceRequest,
+  LinkDeviceRequest
+} from '@/models/requests/DeviceRequest/linkDeviceRequest'
 import getDeviceList from '@/services/servicesDevice/getDeviceList'
 import getRoom from '@/services/servicesDevice/getRoom'
 import getRoomList from '@/services/servicesDevice/getRoomList'
+import linkNewDevice from '@/services/servicesDevice/linkNewDevice'
+import sendSignal from '@/services/servicesDevice/sendSignal'
+import craftSendSignalRequest from '@/utils/deviceControll'
 import { errorAlert, loading, successAlert } from '@/utils/sweetAlert'
+import Brand from '../DeviceList/Brand'
+import NewDeviceDialog from './components/NewDeviceDialog'
 import Sensor from './components/Sensor'
 import Weather from './components/Weather'
 
 import '@/assets/css/components/Home.css'
-import NewDeviceDialog from './components/NewDeviceDialog'
-import linkNewDevice from '@/services/servicesDevice/linkNewDevice'
-import {
-  LinkDeviceRequest,
-  initialLinkDeviceRequest
-} from '@/models/requests/DeviceRequest/linkDeviceRequest'
 
 const StyledGaugeContainerSm = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -112,10 +114,8 @@ const Home: React.FC = () => {
   }
 
   useEffect(() => {
-    Swal.fire(loading)
     getRoomList()
       .then((rooms) => {
-        Swal.close()
         setRooms(rooms)
       })
       .catch(() => Swal.fire('Failed to get rooms'))
@@ -151,6 +151,15 @@ const Home: React.FC = () => {
       }
     } else {
       Swal.fire(errorAlert('Missing name !') as SweetAlertOptions)
+    }
+  }
+
+  const onFanChange = async (fan: FANSPEED) => {
+    setSelectedDevice({ ...selectedDevice, fan: fan })
+    try {
+      await sendSignal(craftSendSignalRequest({ fan: fan }, selectedDevice))
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -279,6 +288,7 @@ const Home: React.FC = () => {
                         }}
                       />
                     }
+                    onClick={() => onFanChange(FANSPEED.HIGH)}
                   >
                     HIGH
                   </Button>
@@ -300,6 +310,7 @@ const Home: React.FC = () => {
                         }}
                       />
                     }
+                    onClick={() => onFanChange(FANSPEED.MEDIUM)}
                   >
                     MED
                   </Button>
@@ -321,6 +332,7 @@ const Home: React.FC = () => {
                         }}
                       />
                     }
+                    onClick={() => onFanChange(FANSPEED.LOW)}
                   >
                     LOW
                   </Button>
@@ -436,7 +448,15 @@ const Home: React.FC = () => {
                     }}
                     onClick={() => handleCardOnClick(device)}
                   >
-                    <div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%'
+                      }}
+                    >
+                      <Brand brandName={device.brand} />
                       <Switch
                         color='primary'
                         checked={device.status === 'ON'}

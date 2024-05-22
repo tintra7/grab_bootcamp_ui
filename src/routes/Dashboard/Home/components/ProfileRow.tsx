@@ -1,12 +1,15 @@
-import { FANSPEED, MODE } from '@/constants/enum'
-import { IDevice } from '@/models/entities/deviceModel'
-import { ThermostatOutlined, WindPower } from '@mui/icons-material'
+import { ChangeEvent, useState } from 'react'
+
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import InputAdornment from '@mui/material/InputAdornment'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
-import { ChangeEvent, useState } from 'react'
+
+import { ThermostatOutlined, WindPower } from '@mui/icons-material'
+
+import { FANSPEED, MODE } from '@/constants/enum'
+import { IDevice } from '@/models/entities/deviceModel'
 
 function TemperatureInput({
   defaultTemp,
