@@ -36,10 +36,8 @@ const Header: React.FC = () => {
   const [room, setRoom] = useState<string>(roomRedux)
 
   useEffect(() => {
-    Swal.fire(loading)
     getRoomList()
       .then((rooms) => {
-        Swal.close()
         setRooms(rooms)
         setRoom(rooms[0]._id)
         dispatch(
@@ -56,7 +54,7 @@ const Header: React.FC = () => {
     <div className='header'>
       <div className='text'>
         <Typography variant='h5' fontWeight={600}>
-          Welcome home, David Ng
+          Welcome home, Thien Bui
         </Typography>
         <Typography variant='h6' color='textSecondary'>
           Have a great day!
@@ -93,7 +91,7 @@ const Header: React.FC = () => {
           <NotificationsRounded />
         </IconButton>
         <Avatar
-          {...stringAvatar('David Ng')}
+          {...stringAvatar('Thien Bui')}
           sx={{
             width: hidden ? 24 : 48,
             height: hidden ? 24 : 48,

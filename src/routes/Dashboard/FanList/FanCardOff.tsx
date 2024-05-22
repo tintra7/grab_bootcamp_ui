@@ -1,20 +1,18 @@
+import Swal from 'sweetalert2'
+
+import Grid from '@mui/material/Grid'
+
+import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
 import EditIcon from '@mui/icons-material/Edit'
 import WaterDropIcon from '@mui/icons-material/WaterDrop'
-import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
-import FanPowerButtonGroup from '../FanList/FanPowerButtonGroup'
 
 import FanOFF from '@/assets/images/fan-off.png'
-import '@/assets/css/components/FanList/FanCard.css'
-
-import setFan from '@/services/servicesFan/setFan'
-import sendFanSignal from '@/services/servicesFan/sendFanSignal'
-
+import { FANLIGHT, FANSPEEDFORFAN, FANSWING, STATUS } from '@/constants/enum'
 import { IFan } from '@/models/entities/fanModel'
-import { STATUS, FANSPEEDFORFAN, FANLIGHT, FANSWING } from '@/constants/enum'
-
-import Swal from 'sweetalert2'
+import sendFanSignal from '@/services/servicesFan/sendFanSignal'
+import setFan from '@/services/servicesFan/setFan'
 import { loading } from '@/utils/sweetAlert'
-
+import FanPowerButtonGroup from '../FanList/FanPowerButtonGroup'
 
 interface FanCardProp {
   fan: IFan
@@ -60,23 +58,28 @@ const FanCardOff = ({ fan, updateFanList }: FanCardProp): JSX.Element => {
         </div>
       </div>
       <div className='card-body'>
-        <div className='ac-img-container'>
-          <img src={FanOFF} />
-        </div>
-        <div className='stats-container disable'>
-          <div className='stat'>
-            <WaterDropIcon className='stat-icon humidity' />
-            <span>--</span>
-          </div>
-          <div className='stat'>
-            <DeviceThermostatIcon className='stat-icon temp' />
-            <span>--</span>
-          </div>
-        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <div className='ac-img-container'>
+              <img src={FanOFF} />
+            </div>
+          </Grid>
+          <Grid item xs={6}>
+            <div className='stats-container disable'>
+              <div className='stat'>
+                <WaterDropIcon className='stat-icon humidity' />
+                <span>--</span>
+              </div>
+              <div className='stat'>
+                <DeviceThermostatIcon className='stat-icon temp' />
+                <span>--</span>
+              </div>
+            </div>
+          </Grid>
+        </Grid>
       </div>
       <div className='card-footer'>
-          
-          <FanPowerButtonGroup status={fan.status} onClick={onClickOn}/>
+        <FanPowerButtonGroup status={fan.status} onClick={onClickOn} />
       </div>
     </div>
   )
