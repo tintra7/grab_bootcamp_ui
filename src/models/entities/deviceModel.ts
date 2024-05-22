@@ -7,7 +7,8 @@ export interface IProfile {
 
 export interface IDevice {
   _id: string
-  userId: string
+  roomId: string
+  espId: string
   name: string
   status: STATUS
   fan: FANSPEED
@@ -17,6 +18,4 @@ export interface IDevice {
   profile: {
     [key in MODE]: IProfile
   }
-  envTemp: number
-  humidity: number
 }

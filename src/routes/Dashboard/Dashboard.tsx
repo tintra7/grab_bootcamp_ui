@@ -20,7 +20,6 @@ import theme from '@/libs/ui/theme'
 import DeviceList from '@/routes/Dashboard/DeviceList/DeviceList'
 import Home from '@/routes/Dashboard/Home/Home'
 import FanList from './FanList/FanList'
-import LinkWizard from './LinkWizard/LinkDevice/LinkWizard'
 import LinkFanWizard from './LinkWizard/LinkFan/LinkFanWizard'
 import Data from './Data'
 
@@ -36,11 +35,6 @@ const SideBarItems: ISideBarItem[] = [
     key: 'devices',
     label: 'Devices',
     icon: <HeatPumpRounded />
-  },
-  {
-    key: 'link',
-    label: 'Link',
-    icon: <InsertLinkRounded />
   },
   {
     key: 'fans',
@@ -99,7 +93,6 @@ const Dashboard: React.FC = () => {
         <Routes>
           <Route element={<Home />} path='/'></Route>
           <Route element={<DeviceList />} path='/devices'></Route>
-          <Route element={<LinkWizard />} path='/link'></Route>
           <Route element={<FanList />} path='/fans'></Route>
           <Route element={<LinkFanWizard />} path='/linkfan'></Route>
           <Route element={<Data />} path='/data'></Route>

@@ -1,18 +1,12 @@
 .devices-container {
-  height: 95%;
-  width: 98%;
+  height: calc(100% - 120px);
   font-size: 2.1rem;
   text-align: center;
   box-sizing: border-box;
   padding: 1% 2rem;
   color: var(--dark-green);
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
   margin: auto;
   border-radius: 15px;
-  gap: 3%; 
-  background-color: var(--cream);
+  background-color: white;
   overflow-y: auto;
-  max-height: 100%;
 }
