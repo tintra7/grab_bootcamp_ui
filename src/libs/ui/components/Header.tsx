@@ -42,7 +42,12 @@ const Header: React.FC = () => {
         Swal.close()
         setRooms(rooms)
         setRoom(rooms[0]._id)
-        dispatch(updateRoom({ _id: rooms[0]._id, sensorId: rooms[0].sensorId }))
+        dispatch(
+          updateRoom({
+            _id: rooms[0]._id,
+            sensorId: rooms[0].sensorId
+          })
+        )
       })
       .catch(() => Swal.fire('Failed to get rooms'))
   }, [])
@@ -63,7 +68,6 @@ const Header: React.FC = () => {
             {' '}
             <Button>Add Room</Button>
             <Select
-              label='room'
               value={room}
               onChange={(e) => {
                 setRoom(e.target.value as string)

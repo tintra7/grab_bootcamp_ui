@@ -264,7 +264,6 @@ const theme = createTheme({
         root: {
           background: 'none',
           fontWeight: 700,
-          color: colors.white,
           '&:before': {
             border: 'none'
           },

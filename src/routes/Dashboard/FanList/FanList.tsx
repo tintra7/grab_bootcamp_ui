@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
+import Swal, { SweetAlertOptions } from 'sweetalert2'
 
-import FanCardOn from './FanCardOn'
-import FanCardOff from './FanCardOff'
+import Grid from '@mui/material/Grid'
 
-import '@/assets/css/components/FanList/FanList.css'
-
+import { STATUS } from '@/constants/enum'
 import { IFan } from '@/models/entities/fanModel'
 import getFanList from '@/services/servicesFan/getFanList'
+import { errorAlert, loading } from '@/utils/sweetAlert'
+import FanCardOff from './FanCardOff'
+import FanCardOn from './FanCardOn'
 
-import Swal, { SweetAlertOptions } from 'sweetalert2'
-import { loading, errorAlert } from '@/utils/sweetAlert'
-import { STATUS } from '@/constants/enum'
+import '@/assets/css/components/FanList/FanList.css'
 
 const FanList: React.FC = () => {
   const [fanList, setFanList] = useState<IFan[]>([])
@@ -32,29 +32,31 @@ const FanList: React.FC = () => {
         setFanList(fans)
       })
       .catch(() =>
-        Swal.fire(
-          errorAlert('Failed to get fan list !') as SweetAlertOptions
-        )
+        Swal.fire(errorAlert('Failed to get fan list !') as SweetAlertOptions)
       )
   }, [])
 
   return (
     <div className='fans-container'>
-      {fanList.map((fan) =>
-        fan.status == STATUS.ON ? (
-          <FanCardOn
-            key={fan._id}
-            fan={fan}
-            updateFanList={updateFanList}
-          />
-        ) : (
-          <FanCardOff
-            key={fan._id}
-            fan={fan}
-            updateFanList={updateFanList}
-          />
-        )
-      )}
+      <Grid container spacing={2}>
+        {fanList.map((fan) => (
+          <Grid item xs={12} sm={4}>
+            {fan.status == STATUS.ON ? (
+              <FanCardOn
+                key={fan._id}
+                fan={fan}
+                updateFanList={updateFanList}
+              />
+            ) : (
+              <FanCardOff
+                key={fan._id}
+                fan={fan}
+                updateFanList={updateFanList}
+              />
+            )}
+          </Grid>
+        ))}
+      </Grid>
     </div>
   )
 }

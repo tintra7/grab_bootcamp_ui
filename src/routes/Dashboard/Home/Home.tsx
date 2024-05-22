@@ -3,33 +3,34 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Gauge, gaugeClasses } from '@mui/x-charts'
 import Swal, { SweetAlertOptions } from 'sweetalert2'
 
-import { styled } from '@mui/material/'
+import { FormControl, InputAdornment, InputLabel, styled } from '@mui/material/'
 import Button from '@mui/material/Button'
-// import Dialog from '@mui/material/Dialog'
-// import DialogActions from '@mui/material/DialogActions'
-// import DialogContent from '@mui/material/DialogContent'
-// import DialogContentText from '@mui/material/DialogContentText'
-// import DialogTitle from '@mui/material/DialogTitle'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Grid from '@mui/material/Grid'
-// import MenuItem from '@mui/material/MenuItem'
-// import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
 import Switch from '@mui/material/Switch'
-// import TextField from '@mui/material/TextField'
+import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 import {
   AcUnitOutlined,
   AddOutlined,
-  AirOutlined,
-  AutoModeOutlined,
+  OpacityRounded,
   RemoveOutlined,
+  SettingsRounded,
+  ThermostatOutlined,
   WindPower
 } from '@mui/icons-material'
 
+import { BRAND } from '@/constants/enum'
 import { updateRoom } from '@/libs/redux/roomSlice'
-// import { BRAND } from '@/constants/enum'
 import { colors } from '@/libs/ui'
 import theme from '@/libs/ui/theme'
 import { IDevice } from '@/models/entities/deviceModel'
@@ -65,7 +66,7 @@ const Home: React.FC = () => {
   const [roomData, setRoomData] = useState<any>({})
   const [selectedDevice, setSelectedDevice] = useState<any>({})
 
-  // const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false)
   const [rooms, setRooms] = useState<any[]>([])
 
   useEffect(() => {
@@ -98,13 +99,13 @@ const Home: React.FC = () => {
     setSelectedDevice(device)
   }
 
-  // const handleNewDeviceOpen = () => {
-  //   setOpen(true)
-  // }
+  const handleNewDeviceOpen = () => {
+    setOpen(true)
+  }
 
-  // const handleNewDeviceClose = () => {
-  //   setOpen(false)
-  // }
+  const handleNewDeviceClose = () => {
+    setOpen(false)
+  }
 
   useEffect(() => {
     Swal.fire(loading)
@@ -130,7 +131,10 @@ const Home: React.FC = () => {
                   key={room._id}
                   onClick={() => {
                     dispatch(
-                      updateRoom({ _id: room._id, sensorId: room.sensorId })
+                      updateRoom({
+                        _id: room._id,
+                        sensorId: room.sensorId
+                      })
                     )
                   }}
                   variant={room._id === roomData._id ? 'contained' : 'outlined'}
@@ -296,7 +300,7 @@ const Home: React.FC = () => {
                   }
                   disableElevation
                 >
-                  <AirOutlined
+                  <OpacityRounded
                     sx={{
                       color:
                         selectedDevice &&
@@ -336,7 +340,7 @@ const Home: React.FC = () => {
                   }
                   disableElevation
                 >
-                  <AutoModeOutlined
+                  <SettingsRounded
                     sx={{
                       color:
                         selectedDevice &&
@@ -365,15 +369,22 @@ const Home: React.FC = () => {
                 variant='contained'
                 disableElevation
                 startIcon={<AddOutlined sx={{ color: 'white' }} />}
-                // onClick={handleNewDeviceOpen}
+                onClick={handleNewDeviceOpen}
               >
                 Add Device
               </Button>
-              {/* <Dialog open={open} onClose={handleNewDeviceClose}>
+              <Dialog
+                open={open}
+                onClose={handleNewDeviceClose}
+                scroll='paper'
+                fullScreen={hidden}
+                fullWidth={true}
+                maxWidth='sm'
+              >
                 <DialogTitle>{'Link New Device to Room'}</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    Provide name and brand for new air conditioner
+                    Provide name and Room for new air conditioner
                   </DialogContentText>
                   <TextField
                     autoFocus
@@ -383,13 +394,111 @@ const Home: React.FC = () => {
                     type='text'
                     fullWidth
                   />
-                  <Select fullWidth>
-                    {Object.entries(BRAND).map(([key, brand]) => (
-                      <MenuItem key={key} value={key}>
-                        {brand}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  <FormControl fullWidth margin='dense'>
+                    <InputLabel id='brand-select-label'>Brand</InputLabel>
+                    <Select
+                      fullWidth
+                      label='Brand'
+                      labelId='brand-select-label'
+                    >
+                      {Object.entries(BRAND).map(([key, brand]) => (
+                        <MenuItem key={key} value={key}>
+                          {brand}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth margin='dense'>
+                    <InputLabel id='room-select-label'>Room</InputLabel>
+                    <Select
+                      fullWidth
+                      label='Room'
+                      labelId='room-select-label'
+                      value={room}
+                      inputProps={{ readOnly: true }}
+                    >
+                      {rooms.map((room) => (
+                        <MenuItem key={room._id} value={room._id}>
+                          {room.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <div style={{ margin: '8px 0 4px' }}>
+                    <Typography variant='subtitle2'>Profile</Typography>
+                    <Grid container spacing={1}>
+                      <Grid item xs={4}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={12}>
+                            <Button
+                              variant='text'
+                              startIcon={<AcUnitOutlined />}
+                              disableElevation
+                            >
+                              COOLING
+                            </Button>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Button
+                              variant='text'
+                              startIcon={<OpacityRounded />}
+                              disableElevation
+                            >
+                              MOISTURING
+                            </Button>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Button
+                              variant='text'
+                              startIcon={<SettingsRounded />}
+                              disableElevation
+                            >
+                              DEFAULT
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={12}>
+                            <TextField
+                              label='Temperature'
+                              sx={{ m: 1 }}
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position='end'>
+                                    <ThermostatOutlined />
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12}></Grid>
+                          <Grid item xs={12}></Grid>
+                        </Grid>
+                      </Grid>
+                      <Grid item xs={5}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={12}>
+                            <TextField
+                              label='With normal TextField'
+                              id='outlined-start-adornment'
+                              sx={{ m: 1, width: '25ch' }}
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position='start'>
+                                    kg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12}></Grid>
+                          <Grid item xs={12}></Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </div>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleNewDeviceClose}>Disagree</Button>
@@ -397,7 +506,7 @@ const Home: React.FC = () => {
                     Agree
                   </Button>
                 </DialogActions>
-              </Dialog> */}
+              </Dialog>
             </div>
             <Grid
               container

@@ -110,7 +110,10 @@ export default function Weather() {
           <div className='weather-info'>
             <div>
               <Typography variant='h4' fontWeight={600}>
-                {weatherData ? Math.round(weatherData.main?.temp) : 28}°C
+                {Object.keys(weatherData).length !== 0
+                  ? Math.round(weatherData.main?.temp)
+                  : 28}
+                °C
               </Typography>
               <div className='weather-status'>
                 {weatherData &&
